@@ -8,6 +8,8 @@ frontend/build
 /.pnp
 .pnp.js
 
+backend/tmp
+
 
 /config.env
 
