@@ -5,12 +5,10 @@ const router = express.Router();
 
 router
   .route("/")
-  // .get(categoryController.getAll)
-  .post(foodItemController.addProduct);
+  .get(foodItemController.getAllItems)
+  .post(foodItemController.addItem);
 
-// router
-//   .route("/:id")
-//   .get(categoryController.getOne)
+router.route("/:id").get(foodItemController.getFoodItem);
 //   .patch(categoryController.updateCategory)
 //   .delete(categoryController.deleteOne);
 

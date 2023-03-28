@@ -3,7 +3,7 @@ const AppError = require("../utils/appError");
 const catchAsync = require("../utils/catchAsync");
 const cloudinary = require("cloudinary");
 
-exports.addProduct = catchAsync(async (req, res, next) => {
+exports.addItem = catchAsync(async (req, res, next) => {
   const file = req.files?.photo;
   const item = req.body;
 
@@ -26,3 +26,33 @@ exports.addProduct = catchAsync(async (req, res, next) => {
     data: doc,
   });
 });
+
+// getAll
+exports.getAllItems = catchAsync(async (req, res, next) => {
+  const foodItems = await FoodItem.find().populate({ path: "category" });
+
+  res.status(201).json({
+    success: true,
+    result: foodItems.length,
+    data: foodItems,
+  });
+});
+
+// getOne
+exports.getFoodItem = catchAsync(async (req, res, next) => {
+  const foodItems = await FoodItem.findById(req.params.id).populate({
+    path: "category",
+  });
+
+  res.status(201).json({
+    success: true,
+    result: foodItems.length,
+    data: foodItems,
+  });
+});
+
+//update
+// exports.updateFoodItem = catchAsync(async (req,res,next) => {
+
+// })
+// delete
