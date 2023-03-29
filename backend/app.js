@@ -24,6 +24,19 @@ app.use(
 app.use("/api/v1/categories", categoryRoutes);
 app.use("/api/v1/foodItems", foodItemRoutes);
 
+// ----- For Deployment
+const __dirname1 = path.resolve();
+
+if (process.env.NODE_ENV !== "DEVELOPMENT") {
+  app.use(express.static("frontend/build"));
+
+  app.get("*", (req, res) => {
+    res.sendFile(path.resolve(__dirname1, "frontend", "build", "index.html"));
+  });
+}
+
+// ----
+
 //Handling undefined routes
 app.all("*", (req, res, next) => {
   //next is used in a special way
