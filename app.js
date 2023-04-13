@@ -1,7 +1,7 @@
 const express = require("express");
 const path = require("path");
 const fileUpload = require("express-fileupload");
-
+const cors = require("cors");
 const AppError = require("./utils/appError");
 
 //Routes
@@ -14,6 +14,7 @@ const globalErrorHandler = require("./controllers/errorController");
 const app = express();
 
 app.use(express.json({ limit: "50mb" }));
+app.use(cors());
 app.use(
   fileUpload({
     useTempFiles: true,

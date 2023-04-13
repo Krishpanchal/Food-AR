@@ -1,6 +1,7 @@
 const FoodItem = require("../models/foodItemModel");
 const AppError = require("../utils/appError");
 const catchAsync = require("../utils/catchAsync");
+const APIFeatures = require("../utils/apiFeatures");
 const cloudinary = require("cloudinary");
 
 exports.addItem = catchAsync(async (req, res, next) => {
@@ -29,7 +30,14 @@ exports.addItem = catchAsync(async (req, res, next) => {
 
 // getAll
 exports.getAllItems = catchAsync(async (req, res, next) => {
-  const foodItems = await FoodItem.find().populate({ path: "category" });
+  const features = new APIFeatures(FoodItem.find(), req.query, req.body)
+    .filter()
+    .keyword()
+    .sort()
+    .limitFields()
+    .paginate();
+
+  const foodItems = await features.query.populate({ path: "category" });
 
   res.status(201).json({
     success: true,

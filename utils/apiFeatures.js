@@ -19,29 +19,26 @@ class APIFeatures {
   }
 
   keyword() {
-    // This is only for projects
-    const keyword = this.queryString.keyword
-      ? {
-          title: {
-            $regex: this.queryString.keyword,
-            $options: "i",
-          },
-        }
-      : {};
+    let searchObj = {};
 
-    this.query = this.query.find({ ...keyword });
-    return this;
-  }
-
-  search() {
-    const objKeys = Object.keys(this.body);
-
-    for (let i = 0; i < objKeys.length; i++) {
-      const searchObj = {};
-      searchObj[objKeys[i]] = { $in: this.body[objKeys[i]] };
-      this.query = this.query.find(searchObj);
+    if (this.queryString.name) {
+      searchObj = {
+        ...searchObj,
+        name: {
+          $regex: this.queryString.name,
+          $options: "i",
+        },
+      };
     }
 
+    if (this.queryString.category) {
+      searchObj = {
+        ...searchObj,
+        category: this.queryString.category,
+      };
+    }
+
+    this.query = this.query.find({ ...searchObj });
     return this;
   }
 

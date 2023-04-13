@@ -3,6 +3,7 @@ import { IoMdEye } from "react-icons/io";
 import { AiFillStar } from "react-icons/ai";
 import { Fade } from "react-reveal";
 import classes from "../../screens/HomePage.module.css";
+import "@google/model-viewer";
 
 const FoodItem = ({ item }) => {
   const modelRef = useRef(null);
