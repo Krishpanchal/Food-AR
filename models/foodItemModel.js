@@ -23,23 +23,22 @@ const foodItemSchema = mongoose.Schema(
         type: String,
       },
     },
-    // views: [
-    //   {
-    //     type: Date,
-    //     default: Date.now,
-    //   },
-    // ],
-    // viewTime: [
-    //   {
-    //     seconds: {
-    //       type: Number,
-    //     },
-    //     viewDate: {
-    //       type: Date,
-    //       default: Date.now,
-    //     },
-    //   },
-    // ],
+    viewTime: [
+      {
+        seconds: {
+          type: Number,
+          default: 0,
+        },
+        viewDate: {
+          type: Date,
+          default: Date.now,
+        },
+      },
+    ],
+    totalViewTime: {
+      type: Number,
+      default: 0,
+    },
   },
   {
     toJSON: { virtuals: true },

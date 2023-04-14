@@ -12,4 +12,6 @@ router.route("/:id").get(foodItemController.getFoodItem);
 //   .patch(categoryController.updateCategory)
 //   .delete(categoryController.deleteOne);
 
+router.route("/viewTime/:id").patch(foodItemController.updateViewTIme);
+
 module.exports = router;

@@ -10,6 +10,16 @@ export const fetchFoodItems = async (foodItem = "", category = "") => {
     const response = await axios.get(url, { name: foodItem });
     return response?.data?.data;
   } catch (error) {
-    console.log(error.response);
+    console.log(error);
+  }
+};
+
+export const updateViewTime = async (id, seconds) => {
+  try {
+    await axios.patch(`/api/v1/foodItems/viewTime/${id}`, {
+      viewSeconds: seconds,
+    });
+  } catch (error) {
+    console.log(error);
   }
 };

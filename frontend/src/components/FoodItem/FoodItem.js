@@ -1,39 +1,44 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef } from "react";
 import { IoMdEye } from "react-icons/io";
 import { AiFillStar } from "react-icons/ai";
 import { Fade } from "react-reveal";
 import classes from "../../screens/HomePage.module.css";
 import "@google/model-viewer";
+import { updateViewTime } from "../../actions/foodItemsActions";
 
 const FoodItem = ({ item }) => {
   const modelRef = useRef(null);
+  let startTime = 0;
+  let endTime = 0;
 
-  useEffect(() => {
-    const myModel = modelRef.current;
+  const handleEventListener = async (e) => {
+    if (e.detail.status === "session-started") {
+      startTime = new Date().getTime() / 1000;
+    }
 
-    let startTime = 0;
-    let endTime = 0;
+    if (e.detail.status === "not-presenting") {
+      endTime = new Date().getTime() / 1000;
 
-    myModel.addEventListener("ar-status", (e) => {
-      if (e.detail.status === "session-started") {
-        startTime = new Date().getTime() / 1000;
-        console.log("startTime", startTime);
-      }
-
-      if (e.detail.status === "not-presenting") {
-        endTime = new Date().getTime() / 1000;
-        console.log("startTime", startTime);
-        console.log("endTime", endTime);
-
+      if (startTime !== 0 && endTime !== 0) {
         const duration = endTime - startTime;
+        console.log("Model Id :- ", item.id);
+
+        await updateViewTime(item.id, Math.round(duration));
+
         console.log(`The model was seen for ${duration} seconds.`);
+        console.log("-----------------------------------");
       }
-    });
-    // Clean up event listener on unmount
-    return () => {
-      myModel.removeEventListener("ar-status", null);
-    };
-  }, []);
+
+      startTime = 0;
+      endTime = 0;
+    }
+  };
+
+  const handleClick = () => {
+    const myModel = modelRef.current;
+    myModel.removeEventListener("ar-status", handleEventListener);
+    myModel.addEventListener("ar-status", handleEventListener);
+  };
 
   return (
     <Fade>
@@ -47,7 +52,11 @@ const FoodItem = ({ item }) => {
             camera-controls
             auto-rotate
             ar
-            ref={modelRef}></model-viewer>
+            ref={modelRef}>
+            <button slot='ar-button' onClick={handleClick}>
+              View in your space
+            </button>
+          </model-viewer>
         </div>
         <div className={classes["food-item-info"]}>
           <div className={classes["food-item-name"]}>

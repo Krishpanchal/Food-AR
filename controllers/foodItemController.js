@@ -59,6 +59,38 @@ exports.getFoodItem = catchAsync(async (req, res, next) => {
   });
 });
 
+// Update View Time
+exports.updateViewTIme = catchAsync(async (req, res, next) => {
+  const givenViewSeconds = req.body.viewSeconds;
+
+  const viewTime = {
+    seconds: givenViewSeconds,
+    viewDate: new Date(),
+  };
+
+  const foodItem = await FoodItem.findById(req.params.id);
+
+  if (!foodItem) return;
+
+  const totalViewTime = foodItem.totalViewTime + givenViewSeconds;
+
+  const updateFoodItem = await FoodItem.findByIdAndUpdate(
+    req.params.id,
+    {
+      totalViewTime: totalViewTime,
+      $push: { viewTime: viewTime },
+    },
+    {
+      new: true,
+      runValidators: true,
+    }
+  );
+
+  res.status(200).json({
+    success: true,
+  });
+});
+
 //update
 // exports.updateFoodItem = catchAsync(async (req,res,next) => {
 
