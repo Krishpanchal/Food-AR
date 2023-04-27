@@ -1,4 +1,5 @@
 const FoodItem = require("../models/foodItemModel");
+const Category = require("../models/categoryModel");
 const AppError = require("../utils/appError");
 const catchAsync = require("../utils/catchAsync");
 const APIFeatures = require("../utils/apiFeatures");
@@ -7,6 +8,11 @@ const cloudinary = require("cloudinary");
 exports.addItem = catchAsync(async (req, res, next) => {
   const file = req.files?.photo;
   const item = req.body;
+
+  console.log();
+
+  console.log(req.body);
+  console.log(req.files);
 
   if (file) {
     const result = await cloudinary.v2.uploader.upload(file.tempFilePath, {
@@ -88,6 +94,119 @@ exports.updateViewTIme = catchAsync(async (req, res, next) => {
 
   res.status(200).json({
     success: true,
+  });
+});
+
+exports.getTotalViewTime = catchAsync(async (req, res, next) => {
+  const foodItems = await FoodItem.find({});
+  let totalViewTime = 0;
+
+  for (let i = 0; i < foodItems.length; i++) {
+    if (foodItems[i]?.totalViewTime)
+      totalViewTime += foodItems[i]?.totalViewTime;
+  }
+
+  res.status(200).json({
+    success: true,
+    totalViewTime: totalViewTime,
+  });
+});
+
+exports.getTotalViewTimeForToday = catchAsync(async (req, res, next) => {
+  const foodItems = await FoodItem.find({});
+  let todayTotalViewTime = 0;
+
+  for (let i = 0; i < foodItems.length; i++) {
+    if (foodItems[i]?.viewTime) {
+      const views = foodItems[i].viewTime;
+
+      for (let j = 0; j < views.length; j++) {
+        if (
+          new Date(views[j].viewDate).toDateString() ==
+          new Date().toDateString()
+        ) {
+          console.log(new Date(views[j].viewDate).toDateString());
+          todayTotalViewTime += views[j].seconds;
+        }
+      }
+    }
+  }
+
+  res.status(200).json({
+    success: true,
+    totalViewTime: todayTotalViewTime,
+  });
+});
+
+exports.getFoodItemsLength = catchAsync(async (req, res, next) => {
+  const foodItems = await FoodItem.countDocuments();
+  const categories = await Category.countDocuments();
+  res.status(200).json({
+    success: true,
+    foodItems,
+    categories,
+  });
+});
+
+exports.getViewTimeByDate = catchAsync(async (req, res, next) => {
+  const foodItems = await FoodItem.find({});
+
+  let data = [];
+
+  for (let i = 0; i < foodItems.length; i++) {
+    if (foodItems[i]?.viewTime) {
+      const views = foodItems[i].viewTime;
+
+      for (let j = 0; j < views.length; j++) {
+        let index = data.findIndex((obj) => {
+          return obj.name === new Date(views[j].viewDate).toLocaleDateString();
+        });
+
+        if (index != -1) {
+          data[index] = {
+            ...data[index],
+            Total: data[index].Total + views[j].seconds,
+          };
+        } else {
+          data.push({
+            name: new Date(views[j].viewDate).toLocaleDateString(),
+            Total: views[j].seconds,
+          });
+        }
+      }
+    }
+  }
+
+  return res.status(200).json({
+    success: true,
+    data,
+  });
+});
+
+exports.getViewsByFoodItem = catchAsync(async (req, res, next) => {
+  const foodItems = await FoodItem.find({});
+
+  let data = [];
+
+  for (let i = 0; i < foodItems.length; i++) {
+    if (foodItems[i]?.viewTime) {
+      const views = foodItems[i].viewTime;
+      let totalViews = 0;
+
+      for (let j = 0; j < views.length; j++) {
+        totalViews += views[j].seconds;
+      }
+
+      data.push({
+        name: foodItems[i].name,
+        value: totalViews,
+      });
+    }
+  }
+
+  return res.status(200).json({
+    success: true,
+    data,
   });
 });
 
