@@ -18,6 +18,7 @@ header {
   justify-content: center;
   height: 100%;
   text-align: center;
+  padding: 0 1.4rem;
 }
 
 .header-container-inner h1 {
@@ -39,7 +40,6 @@ header {
 }
 
 .search-container {
-  width: 700px;
   height: 55px;
   background-color: #fff;
   border-radius: 10px;
@@ -187,4 +187,14 @@ model-viewer {
 .food-category {
   font-size: 1.2rem;
   color: rgb(105, 105, 105);
+}
+
+@media (max-width: 600px) {
+  .search-categories {
+    display: none;
+  }
+
+  .divider {
+    display: none;
+  }
 }
