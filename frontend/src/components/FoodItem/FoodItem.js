@@ -64,7 +64,7 @@ const FoodItem = ({ item }) => {
             <div className={classes["food-item-checks"]}>
               <div className={classes["food-views"]}>
                 <IoMdEye color='#959392' size='1.6rem' />
-                <p>43</p>
+                <p>{item?.viewTime ? item.viewTime.length : 0}</p>
               </div>
               <div className={classes["food-rating"]}>
                 <AiFillStar color='#fff' size='1.4rem' />
