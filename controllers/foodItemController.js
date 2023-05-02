@@ -187,6 +187,7 @@ exports.getViewsByFoodItem = catchAsync(async (req, res, next) => {
   const foodItems = await FoodItem.find({});
 
   let data = [];
+  data.push(["Food Item", "View Seconds"]);
 
   for (let i = 0; i < foodItems.length; i++) {
     if (foodItems[i]?.viewTime) {
@@ -197,10 +198,7 @@ exports.getViewsByFoodItem = catchAsync(async (req, res, next) => {
         totalViews += views[j].seconds;
       }
 
-      data.push({
-        name: foodItems[i].name,
-        value: totalViews,
-      });
+      data.push([foodItems[i].name, totalViews]);
     }
   }
 
